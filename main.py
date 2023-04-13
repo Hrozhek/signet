@@ -6,8 +6,18 @@ from keras.utils import load_img, img_to_array
 from matplotlib import pyplot as plt
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+import logging
+import bentoml
+import joblib
 
 np.random.seed(42)
+
+
+def save(model, bentoml_name, path):
+    bentoml.keras.save(bentoml_name, model)
+
+    joblib.dump(model, path)
+
 
 def load_data(dir, test_size=0.2, verbose=True, load_grayscale=True):
     """
@@ -134,6 +144,8 @@ def plot_history(history):
 
 plot_history(history)
 
+save(model, "bm", "F:\\Desktop\\bentomodel")
+
 # loading Inception
 model2 = tf.keras.applications.InceptionV3(include_top=False, input_shape=(150,150,3))
 # freezing layers
@@ -165,4 +177,5 @@ for p in preds:
         pred_labels.append(0)
 pred_labels = np.array(pred_labels)
 
-print ("Accuracy on test set: {}".format(accuracy_score(y_test, pred_labels)))
+print("Accuracy on test set: {}".format(accuracy_score(y_test, pred_labels)))
+
